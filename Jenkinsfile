@@ -1,6 +1,5 @@
 pipeline {
     environment {
-        registry = "devteam4social/login"
         registryCredential = 'dockercred'
         dockerImage = ''
     }
@@ -11,7 +10,7 @@ pipeline {
     }
     triggers { pollSCM('H/2 * * * *') }
     parameters {
-        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        string(name: 'REGISTRY', defaultValue: 'devteam4social/login', description: 'docker registry path')
 
         text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
 
@@ -30,7 +29,9 @@ pipeline {
         }
         stage('CQ') {
             steps {
-                echo 'cheking cq'
+                if(${params.TOGGLE}){
+                    echo 'cheking cq'
+                }
             }
         }
         stage('build') {
@@ -53,7 +54,7 @@ pipeline {
         stage('Building image') {
           steps{
             script {
-              dockerImage = docker.build registry + ":$BUILD_NUMBER"
+              dockerImage = docker.build $(params.REGISTRY) + ":$BUILD_NUMBER"
             }
           }
         }
@@ -68,7 +69,7 @@ pipeline {
         }
         stage('Remove Unused docker image') {
           steps{
-            sh "docker rmi $registry:$BUILD_NUMBER"
+            sh "docker rmi $(param.REGISTRY):$BUILD_NUMBER"
           }
         }
         stage('deplpoyment') {
