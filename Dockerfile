@@ -1,2 +1,2 @@
 FROM tomcat
-COPY pom.xml /tmp
+COPY target/*.war /var/lib/tomcat/webapps/
