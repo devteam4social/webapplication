@@ -29,9 +29,7 @@ pipeline {
         }
         stage('CQ') {
             steps {
-                if(${params.TOGGLE}){
-                    echo 'cheking cq'
-                }
+                echo "${params.TOGGLE}"
             }
         }
         stage('build') {
@@ -54,7 +52,7 @@ pipeline {
         stage('Building image') {
           steps{
             script {
-                dockerImage = docker.build ${params.REGISTRY} + ":$BUILD_NUMBER"
+                dockerImage = docker.build params.REGISTRY + ":$BUILD_NUMBER"
             }
           }
         }
@@ -69,7 +67,7 @@ pipeline {
         }
         stage('Remove Unused docker image') {
           steps{
-              sh "docker rmi ${param.REGISTRY}:$BUILD_NUMBER"
+              sh "docker rmi ${params.REGISTRY}:$BUILD_NUMBER"
           }
         }
         stage('deplpoyment') {
