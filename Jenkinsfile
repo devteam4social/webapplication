@@ -28,8 +28,13 @@ pipeline {
             }
         }
         stage('CQ') {
+            when {
+                expression { 
+                    return params.TOGGLE
+                }
+            }
             steps {
-                echo "${params.TOGGLE}"
+                echo "print CQ ${params.TOGGLE}"
             }
         }
         stage('build') {
